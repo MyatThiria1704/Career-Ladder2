@@ -1,0 +1,474 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}NeonX | Discover Your Career Path{% endblock %}</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Dark Theme Variables */
+      --primary-bg-dark: #0a0f1c;
+      --secondary-bg-dark: #131b2e;
+      --accent-blue: #4361ee;
+      --accent-purple: #7209b7;
+      --accent-teal: #4cc9f0;
+      --text-primary-dark: #ffffff;
+      --text-secondary-dark: #b8c1ec;
+      --card-bg-dark: rgba(255, 255, 255, 0.05);
+      --border-dark: rgba(255, 255, 255, 0.1);
+
+      /* Improved Light Theme Variables - Soft Background */
+      --primary-bg-light: #f8fafc;
+      --secondary-bg-light: #f1f5f9;
+      --accent-blue-light: #3a56d4;
+      --accent-purple-light: #6a0dad;
+      --accent-teal-light: #00b4d8;
+      --text-primary-light: #1e293b;
+      --text-secondary-light: #475569;
+      --card-bg-light: #ffffff;
+      --border-light: #e2e8f0;
+      --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+      /* Common Variables */
+      --border-radius: 16px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+      /* Default to Dark Theme */
+      --primary-bg: var(--primary-bg-dark);
+      --secondary-bg: var(--secondary-bg-dark);
+      --text-primary: var(--text-primary-dark);
+      --text-secondary: var(--text-secondary-dark);
+      --card-bg: var(--card-bg-dark);
+      --border-color: var(--border-dark);
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .light-theme {
+      --primary-bg: #f0f4ff;
+      --secondary-bg: #e6f2ff;
+      --text-primary: #1a365d;
+      --text-secondary: #2d3748;
+      --card-bg: #ffffff;
+      --border-color: #cbd5e0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      background-color: var(--primary-bg);
+      color: var(--text-primary);
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: var(--transition);
+    }
+
+    h1,h2,h3,h4,h5 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight:700; line-height:1.2;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width:8px; }
+    ::-webkit-scrollbar-track { background: var(--primary-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius:4px; }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1.2rem; cursor: pointer; transition: var(--transition);
+      padding: 0.5rem; border-radius: 50%; display: flex; align-items:center; justify-content:center;
+      width: 42px; height: 42px;
+    }
+    .theme-toggle:hover { background-color: var(--accent-blue); color:#fff; transform: rotate(15deg); }
+    .light-theme .bi-moon-fill { display:none; }
+    .light-theme .bi-sun { display:block !important; }
+    .bi-sun { display:none; }
+
+    /* Language Selector */
+    .language-selector { position:relative; margin-right:1rem; }
+    .language-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-weight:500; display:flex; align-items:center; gap:.5rem;
+      padding:.5rem 1rem; border-radius: var(--border-radius);
+      transition: var(--transition); cursor:pointer;
+    }
+    .language-btn:hover { background: var(--accent-blue); color:#fff; border-color: var(--accent-blue); }
+    .language-dropdown {
+      position:absolute; top:100%; right:0; background: var(--card-bg); border-radius: var(--border-radius);
+      padding:.5rem; min-width:150px; box-shadow: var(--shadow); opacity:0; visibility:hidden;
+      transform: translateY(-10px); transition: var(--transition); z-index:1000; border:1px solid var(--border-color);
+    }
+    .language-dropdown.show { opacity:1; visibility:visible; transform: translateY(0); }
+    .language-option { padding:.75rem 1rem; border-radius:8px; cursor:pointer; transition: var(--transition); display:flex; align-items:center; gap:.75rem; }
+    .language-option:hover { background: var(--secondary-bg); }
+    .language-option.active { background: var(--accent-blue); color:#fff; }
+
+    /* Navbar */
+    .navbar { padding:1.5rem 0; background: var(--primary-bg); backdrop-filter: blur(10px);
+              position:fixed; top:0; width:100%; z-index:1000; transition: var(--transition); border-bottom:1px solid var(--border-color); }
+    .navbar.scrolled { background: var(--primary-bg); box-shadow: var(--shadow); }
+    .navbar-brand { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.8rem; color:var(--text-primary); text-decoration:none; display:flex; align-items:center; }
+    .navbar-brand span { color: var(--accent-teal); margin-left:4px; }
+    .nav-link { color: var(--text-secondary) !important; font-weight:500; margin:0 .5rem; transition: var(--transition); position:relative; }
+    .nav-link::after { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background: linear-gradient(90deg,var(--accent-blue),var(--accent-teal)); transition: var(--transition); }
+    .nav-link:hover,.nav-link.active { color: var(--text-primary) !important; }
+    .nav-link:hover::after,.nav-link.active::after { width:100%; }
+    .navbar-toggler { border:none; color:var(--text-primary); padding:.25rem .5rem; }
+    .navbar-toggler:focus { box-shadow:none; }
+
+    /* Buttons */
+    .btn-primary-custom {
+      background: linear-gradient(135deg,var(--accent-blue),var(--accent-purple));
+      color:#fff; font-weight:600; padding:12px 30px; border-radius: var(--border-radius); border:none;
+      transition: var(--transition); text-decoration:none; display:inline-block; position:relative; overflow:hidden;
+    }
+    .btn-primary-custom::before {
+      content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+      background: linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent); transition: var(--transition);
+    }
+    .btn-primary-custom:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(67,97,238,.3); color:#fff; }
+    .btn-primary-custom:hover::before { left:100%; }
+    .btn-secondary-custom {
+      background: transparent; color: var(--text-primary); border:2px solid var(--border-color);
+      font-weight:500; padding:10px 28px; border-radius: var(--border-radius); transition: var(--transition);
+    }
+    .btn-secondary-custom:hover { background: var(--card-bg); border-color: var(--accent-blue); color: var(--text-primary); transform: translateY(-2px); }
+
+    /* Hero */
+    .hero-section {
+      padding: 12rem 0 8rem;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(67,97,238,.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(114,9,183,.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(76,201,240,.1) 0%, transparent 50%),
+        var(--primary-bg);
+      position:relative; overflow:hidden; transition: var(--transition);
+    }
+    .light-theme .hero-section {
+      background:
+        radial-gradient(circle at 20% 80%, rgba(67,97,238,.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(114,9,183,.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(76,201,240,.05) 0%, transparent 50%),
+        linear-gradient(135deg,#e6f2ff 0%, #f0f4ff 50%, #e6fffa 100%);
+    }
+    .hero-section::before {
+      content:''; position:absolute; top:0; left:0; width:100%; height:100%;
+      background: linear-gradient(180deg, rgba(10,15,28,.8) 0%, transparent 20%, transparent 80%, rgba(10,15,28,.8) 100%); z-index:0;
+    }
+    .light-theme .hero-section::before {
+      background: linear-gradient(180deg, rgba(240,244,255,.9) 0%, transparent 20%, transparent 80%, rgba(240,244,255,.9) 100%);
+    }
+    .hero-content { position:relative; z-index:1; }
+    .hero-section h1 {
+      font-size:4rem; font-weight:700; line-height:1.2; margin-bottom:1.5rem;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-teal) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .hero-section .subtext { font-size:1.25rem; color: var(--text-secondary); max-width:600px; margin:1.5rem auto 2.5rem; }
+    .hero-badge {
+      display:inline-flex; align-items:center; background: rgba(67,97,238,.1); color: var(--accent-teal);
+      padding:.5rem 1rem; border-radius:50px; font-size:.9rem; font-weight:500; margin-bottom:1.5rem; border:1px solid rgba(76,201,240,.2);
+    }
+    .light-theme .hero-badge { background: rgba(67,97,238,.08); color: var(--accent-blue-light); border-color: rgba(67,97,238,.2); }
+    .hero-badge i { margin-right:.5rem; }
+
+    /* Sections */
+    .section { padding:6rem 0; transition: var(--transition); }
+    .section-title { font-size:2.5rem; margin-bottom:1rem; text-align:center; }
+    .section-subtitle { color: var(--text-secondary); font-size:1.1rem; max-width:600px; margin:0 auto 3rem; text-align:center; }
+
+    /* Testimonials */
+    .testimonial-card {
+      background: var(--card-bg); border-radius: var(--border-radius); padding:2rem; height:100%; text-align:left;
+      transition: var(--transition); border:1px solid var(--border-color); position:relative; overflow:hidden; box-shadow: var(--shadow);
+    }
+    .testimonial-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background: linear-gradient(180deg,var(--accent-blue),var(--accent-purple)); }
+    .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,.1); border-color: var(--accent-blue); }
+    .testimonial-header { display:flex; align-items:center; margin-bottom:1.5rem; }
+    .testimonial-avatar { width:60px; height:60px; border-radius:50%; background: linear-gradient(135deg,var(--accent-blue),var(--accent-purple)); display:flex; align-items:center; justify-content:center; margin-right:1rem; font-weight:600; font-size:1.2rem; color:#fff; }
+    .testimonial-info h4 { margin-bottom:.25rem; font-size:1.1rem; }
+    .testimonial-info p { color: var(--text-secondary); font-size:.9rem; margin-bottom:0; }
+    .testimonial-card .quote { font-size:1rem; line-height:1.6; color: var(--text-secondary); position:relative; padding-left:1rem; }
+    .testimonial-card .quote::before { content:'"'; position:absolute; left:0; top:-.5rem; font-size:2rem; color: var(--accent-blue); opacity:.5; font-family: Georgia, serif; }
+
+    /* Features */
+    .feature-card {
+      background: var(--card-bg); border-radius: var(--border-radius); padding:2.5rem 2rem; height:100%;
+      transition: var(--transition); border:1px solid var(--border-color); text-align:center; position:relative; overflow:hidden; box-shadow: var(--shadow);
+    }
+    .feature-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background: linear-gradient(90deg,var(--accent-blue),var(--accent-purple)); }
+    .feature-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,.1); border-color: var(--accent-blue); }
+    .feature-icon {
+      width:80px; height:80px; border-radius:50%; background: rgba(67,97,238,.1); display:flex; align-items:center; justify-content:center;
+      margin:0 auto 1.5rem; font-size:2rem; color: var(--accent-teal); transition: var(--transition);
+    }
+    .light-theme .feature-icon { background: rgba(67,97,238,.08); color: var(--accent-blue-light); }
+    .feature-card:hover .feature-icon { background: rgba(67,97,238,.2); transform: scale(1.1); }
+    .feature-card h3 { margin-bottom:1rem; font-size:1.5rem; }
+    .feature-card p { color: var(--text-secondary); }
+
+    /* Stats */
+    .stats-section { background: var(--secondary-bg); border-radius: var(--border-radius); padding:4rem 2rem; margin:3rem 0; transition: var(--transition); border:1px solid var(--border-color); }
+    .stat-item { text-align:center; padding:1rem; }
+    .stat-number {
+      font-size:3rem; font-weight:700; background: linear-gradient(135deg,var(--accent-teal),var(--accent-blue));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1; margin-bottom:.5rem;
+    }
+    .stat-label { color: var(--text-secondary); font-size:1rem; font-weight:500; }
+
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+      border-radius: var(--border-radius); padding:4rem 2rem; text-align:center; margin:3rem 0; position:relative; overflow:hidden; box-shadow: var(--shadow);
+    }
+    .cta-section::before {
+      content:''; position:absolute; top:0; left:0; width:100%; height:100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+      background-size: cover;
+    }
+    .cta-content { position:relative; z-index:1; }
+    .cta-section h2 { margin-bottom:1.5rem; color:#fff; }
+    .cta-section p { color: rgba(255,255,255,.8); max-width:600px; margin:0 auto 2rem; }
+    .btn-cta-light { background: rgba(255,255,255,.9); color: var(--accent-blue); font-weight:600; padding:12px 30px; border-radius: var(--border-radius); border:none; transition: var(--transition); }
+    .btn-cta-light:hover { background:#fff; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,.2); color: var(--accent-blue); }
+
+    /* Footer */
+    footer { padding:4rem 0 2rem; background: var(--secondary-bg); border-top:1px solid var(--border-color); transition: var(--transition); }
+    .footer-brand { font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.8rem; color: var(--text-primary); text-decoration:none; display:inline-block; margin-bottom:1rem; }
+    .footer-brand span { color: var(--accent-teal); }
+    .footer-about { color: var(--text-secondary); margin-bottom:2rem; }
+    .social-links { display:flex; gap:1rem; margin-bottom:2rem; }
+    .social-links a { display:flex; align-items:center; justify-content:center; width:40px; height:40px; background: var(--card-bg); border-radius:50%; color: var(--text-secondary); text-decoration:none; transition: var(--transition); border:1px solid var(--border-color); }
+    .social-links a:hover { background: var(--accent-blue); color:#fff; transform: translateY(-3px); border-color: var(--accent-blue); }
+    .footer-heading { font-size:1.2rem; margin-bottom:1.5rem; color: var(--text-primary); }
+    .footer-links { list-style:none; padding:0; margin:0; }
+    .footer-links li { margin-bottom:.75rem; }
+    .footer-links a { color: var(--text-secondary); text-decoration:none; transition: var(--transition); }
+    .footer-links a:hover { color: var(--accent-teal); }
+    .footer-bottom { padding-top:2rem; border-top:1px solid var(--border-color); text-align:center; color: var(--text-secondary); font-size:.9rem; }
+
+    /* Animations */
+    @keyframes fadeInUp { from {opacity:0; transform: translateY(30px);} to {opacity:1; transform: translateY(0);} }
+    .fade-in-up { animation: fadeInUp .8s ease forwards; }
+    .delay-1 { animation-delay:.2s; } .delay-2 { animation-delay:.4s; } .delay-3 { animation-delay:.6s; }
+
+    /* Responsive */
+    @media (max-width:768px){
+      .hero-section h1 { font-size:2.8rem; }
+      .hero-section { padding:10rem 0 6rem; }
+      .section { padding:4rem 0; }
+      .section-title { font-size:2rem; }
+      .navbar-brand { font-size:1.5rem; }
+    }
+    @media (max-width:576px){
+      .hero-section h1 { font-size:2.2rem; }
+      .hero-section .subtext { font-size:1rem; }
+      .btn-primary-custom,.btn-secondary-custom { padding:10px 20px; font-size:.9rem; }
+      .stat-number { font-size:2.5rem; }
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% include "includes/header.html" %}
+
+  {% block content %}{% endblock %}
+
+  {% include "includes/footer.html" %}
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS (same logic as your original page) -->
+  <script>
+    // Translations
+    const translations = {
+      en: {
+        "nav.home":"Home","nav.howItWorks":"Take Quiz","nav.successStories":"About us","nav.contactUs":"Contact us","nav.getStarted":"Get Started", "nav.archiPaths":"Architecture Path",
+        "hero.trusted":"Trusted by 15,000+ career seekers","hero.title":"Find Your Perfect Career Match","hero.subtitle":"Data-driven career discovery that matches your personality, skills, and ambitions with ideal career paths.","hero.cta.quiz":"Take the Career Quiz","hero.cta.learnMore":"Learn More",
+        "stats.satisfaction":"Satisfaction Rate","stats.users":"Users Helped","stats.careers":"Career Paths","stats.quizTime":"Average Quiz Time",
+        "howItWorks.title":"How NeonX Works","howItWorks.subtitle":"Three simple steps to discover your ideal career path","howItWorks.step1.title":"Personalized Assessment","howItWorks.step1.description":"Complete our scientifically-designed quiz to uncover your strengths, interests, and work preferences.","howItWorks.step2.title":"Smart Matching","howItWorks.step2.description":"Our AI analyzes your results against hundreds of career paths to find your perfect matches.","howItWorks.step3.title":"Action Plan","howItWorks.step3.description":"Get a customized roadmap with steps, resources, and timelines to achieve your career goals.",
+        "testimonials.title":"Success Stories","testimonials.subtitle":"Hear from people who discovered their career path with NeonX","testimonials.job1":"Software Engineer","testimonials.job2":"UX Designer","testimonials.job3":"Data Analyst",
+        "testimonials.quote1":"NeonX helped me transition from a generic business degree to a focused tech career. The personalized roadmap was exactly what I needed to land my first developer job.",
+        "testimonials.quote2":"I was considering multiple career options and feeling overwhelmed. The quiz results pointed me toward UX design, which I hadn't seriously considered but now love.",
+        "testimonials.quote3":"As a recent graduate, I was struggling to find direction. NeonX not only identified data analysis as my ideal field but provided a clear path to gain the necessary skills.",
+        "cta.title":"Ready to Discover Your Career Path?","cta.subtitle":"Take our 10-minute assessment and receive personalized career recommendations based on your unique profile, skills, and interests.","cta.button":"Start Free Assessment",
+        "footer.about":"Helping individuals discover their ideal career paths through data-driven assessments and personalized guidance.","footer.company":"Company","footer.aboutUs":"About Us","footer.careers":"Careers","footer.blog":"Blog","footer.press":"Press","footer.resources":"Resources","footer.careerGuides":"Career Guides","footer.skillAssessments":"Skill Assessments","footer.faq":"FAQ","footer.support":"Support","footer.newsletter":"Stay Updated","footer.newsletterSubtitle":"Subscribe to our newsletter for career tips and updates.","footer.emailPlaceholder":"Your email address","footer.subscribe":"Subscribe","footer.rights":"All rights reserved.",
+        "quizHub.title":"Choose your assessment",
+        "quizHub.heading":"Start the path that fits your goal",
+        "quizHub.subtitle":"Pick a test to begin. You can take more than one—your matches get better with every result.",
+        "quizHub.aptitude.title":"Aptitude Test",
+        "quizHub.aptitude.desc":"Measure reasoning, pattern recognition and problem-solving speed.",
+        "quizHub.educational.title":"Educational Test",
+        "quizHub.educational.desc":"Explore study preferences and subjects that match your strengths.",
+        "quizHub.combined.title":"Combined Test",
+        "quizHub.combined.desc":"A condensed mix of aptitude + interests for a quick overall match.",
+        "quizHub.cse.title":"Educational Test (CSE)",
+        "quizHub.cse.desc":"For tech-inclined students: find the right CS/Engineering direction.",
+        "quizHub.start":"Start",
+        "quizHub.helpTitle":"Not sure where to start?",
+        "quizHub.helpSub":"Take the Combined Test first, then dive deeper with Aptitude or Educational tests.",
+        "quizHub.takeCombined":"Try Combined First"
+
+      },
+      my: {
+        "nav.home":"ပင်မစာမျက်နှာ","nav.howItWorks":"အလုပ်လုပ်ပုံ","nav.successStories":"အောင်မြင်မှုများ","nav.contactUs":"အလုပ်အကိုင်လမ်းကြောင်းများ","nav.getStarted":"စတင်ရန်", "nav.archiPaths":"ဗိသုကာလမ်းကြောင်း",
+        "hero.trusted":"အလုပ်အကိုင်ရှာဖွေသူ ၁၅,၀၀၀+ ယုံကြည်စိတ်ချ","hero.title":"သင့်အတွက်အကောင်းဆုံးအလုပ်အကိုင်ကိုရှာဖွေပါ","hero.subtitle":"သင့်စရိုက်၊ ကျွမ်းကျင်မှုများနှင့် ရည်မှန်းချက်များကို အကောင်းဆုံးအလုပ်အကိုင်လမ်းကြောင်းများနှင့် ကိုက်ညီစေသော ဒေတာအခြေပြု အလုပ်အကိုင်ရှာဖွေရေးစနစ်","hero.cta.quiz":"အလုပ်အကိုင်စစ်ဆေးမှုဖြေကြည့်ရန်","hero.cta.learnMore":"ပိုမိုလေ့လာရန်",
+        "stats.satisfaction":"စိတ်ကျေနပ်မှုနှုန်း","stats.users":"အသုံးပြုသူများ","stats.careers":"အလုပ်အကိုင်လမ်းကြောင်းများ","stats.quizTime":"ပျမ်းမျှစစ်ဆေးမှုအချိန်",
+        "howItWorks.title":"NeonX အလုပ်လုပ်ပုံ","howItWorks.subtitle":"သင့်အတွက်အကောင်းဆုံးအလုပ်အကိုင်လမ်းကြောင်းကို ရှာဖွေရန် ရိုးရှင်းသောအဆင့်သုံးဆင့်","howItWorks.step1.title":"စိတ်ကြိုက်အကဲဖြတ်ခြင်း","howItWorks.step1.description":"သင့်အားသာချက်များ၊ စိတ်ဝင်စားမှုများနှင့် အလုပ်လုပ်နည်းစနစ်များကို ရှာဖွေရန် သိပ္ပံနည်းကျဒီဇိုင်းထုတ်ထားသော စစ်ဆေးမှုကို ဖြေဆိုပါ","howItWorks.step2.title":"အဆင်ပြေစွာချိတ်ဆက်ခြင်း","howItWorks.step2.description":"ကျွန်ုပ်တို့၏ AI သည် သင့်ရလဒ်များကို ရာနှင့်ချီသော အလုပ်အကိုင်လမ်းကြောင်းများနှင့် နှိုင်းယှဉ်ကာ သင့်အတွက်အကောင်းဆုံးအလုပ်အကိုင်များကို ရှာဖွေပေးပါသည်","howItWorks.step3.title":"လုပ်ဆောင်ချက်အစီအစဉ်","howItWorks.step3.description":"သင့်အလုပ်အကိုင်ပန်းတိုင်များကို အောင်မြင်စေရန် အဆင့်များ၊ အရင်းအမြစ်များနှင့် အချိန်ဇယားများပါဝင်သော စိတ်ကြိုက်လမ်းညွှန်ချက်ကို ရယူပါ",
+        "testimonials.title":"အောင်မြင်မှုဇာတ်လမ်းများ","testimonials.subtitle":"NeonX ဖြင့် မိမိ၏အလုပ်အကိုင်လမ်းကြောင်းကို ရှာဖွေတွေ့ရှိခဲ့သူများ၏ အတွေ့အကြုံများ","testimonials.job1":"ဆော့ဖ်ဝဲအင်ဂျင်နီယာ","testimonials.job2":"UX ဒီဇိုင်းနာ","testimonials.job3":"ဒေတာခွဲခြမ်းစိတ်ဖြာသူ",
+        "testimonials.quote1":"NeonX သည် ယေဘုယျစီးပွားရေးဘွဲ့မှ နည်းပညာဆိုင်ရာအလုပ်အကိုင်သို့ ကူးပြောင်းရာတွင် ကူညီပေးခဲ့သည်။ စိတ်ကြိုက်လမ်းညွှန်ချက်သည် ကျွန်ုပ်၏ပထမဆုံး developer အလုပ်ရရှိရန် လိုအပ်ချက်အတိအကျဖြစ်ခဲ့သည်",
+        "testimonials.quote2":"ကျွန်မသည် အလုပ်အကိုင်ရွေးချယ်စရာများစွာကို စဉ်းစားနေပြီး စိတ်ရှုပ်ထွေးနေခဲ့သည်။ စစ်ဆေးမှုရလဒ်များသည် UX design ဆီသို့ ညွှန်ပြခဲ့ပြီး ကျွန်မသည် စဉ်းစားမထားမိသော်လည်း ယခုအခါ နှစ်သက်နေပါသည်",
+        "testimonials.quote3":"ဘွဲ့ရအသစ်အနေဖြင့် ကျွန်ုပ်သည် ဦးတည်ချက်ရှာဖွေရန် ရုန်းကန်နေခဲ့သည်။ NeonX သည် ဒေတာခွဲခြမ်းစိတ်ဖြာခြင်းကို ကျွန်ုပ်၏အကောင်းဆုံးနယ်ပယ်အဖြစ် ဖော်ထုတ်ပေးရုံသာမက လိုအပ်သောကျွမ်းကျင်မှုများရရှိရန် ရှင်းလင်းသောလမ်းကြောင်းကိုပါ ပေးအပ်ခဲ့သည်",
+        "cta.title":"သင့်အလုပ်အကိုင်လမ်းကြောင်းကို ရှာဖွေရန် အဆင်သင့်ဖြစ်ပြီလား?","cta.subtitle":"ကျွန်ုပ်တို့၏ ၁၀ မိနစ်ကြာ အကဲဖြတ်ချက်ကို ဖြေဆိုပြီး သင့်၏ထူးခြားသောပရိုဖိုင်း၊ ကျွမ်းကျင်မှုများနှင့် စိတ်ဝင်စားမှုများအပေါ် အခြေခံသော စိတ်ကြိုက်အလုပ်အကိုင်အကြံပြုချက်များကို ရယူပါ","cta.button":"အခမဲ့အကဲဖြတ်ချက်စတင်ရန်",
+        "footer.about":"ဒေတာအခြေပြုအကဲဖြတ်ချက်များနှင့် စိတ်ကြိုက်လမ်းညွှန်မှုများဖြင့် လူတစ်ဦးချင်းစီ၏ အကောင်းဆုံးအလုပ်အကိုင်လမ်းကြောင်းများကို ရှာဖွေရန် ကူညီပေးသည်","footer.company":"ကုမ္ပဏီ","footer.aboutUs":"ကျွန်ုပ်တို့အကြောင်း","footer.careers":"အလုပ်အကိုင်များ","footer.blog":"ဘလော့ဂ်","footer.press":"သတင်းမီဒီယာ","footer.resources":"အရင်းအမြစ်များ","footer.careerGuides":"အလုပ်အကိုင်လမ်းညွှန်များ","footer.skillAssessments":"ကျွမ်းကျင်မှုအကဲဖြတ်ချက်များ","footer.faq":"မေးခွန်းများ","footer.support":"အကူအညီ","footer.newsletter":"နောက်ဆုံးရသတင်းများရယူရန်","footer.newsletterSubtitle":"အလုပ်အကိုင်အကြံပြုချက်များနှင့် နောက်ဆုံးရသတင်းများအတွက် ကျွန်ုပ်တို့၏သတင်းလွှာကို စာရင်းသွင်းပါ","footer.emailPlaceholder":"သင့်အီးမေးလ်လိပ်စာ","footer.subscribe":"စာရင်းသွင်းရန်","footer.rights":"အခွင့်အရေးအားလုံးရယူထားသည်",
+        "quizHub.title":"စမ်းသပ်မှုကို ရွေးချယ်ပါ",
+        "quizHub.heading":"သင့်ရည်မှန်းချက်နှင့် ကိုက်ညီသော လမ်းကြောင်းကို စတင်ပါ",
+        "quizHub.subtitle":"စတင်လိုသော စမ်းသပ်မှုကို ရွေးပါ။ တစ်ခုထက်ပိုလည်း ဖြေဆိုနိုင်ပြီး ရလဒ်များ ပိုပြီးတိကျလာပါမည်။",
+        "quizHub.aptitude.title":"Aptitude စမ်းသပ်မှု",
+        "quizHub.aptitude.desc":"အကျိုးဆောင်ခြင်း၊ ပုံစံအလံသိခြင်းနှင့် ပြဿနာဖြေရှင်းနိုင်မှုကို တိုင်းတာပါ။",
+        "quizHub.educational.title":"Educational စမ်းသပ်မှု",
+        "quizHub.educational.desc":"သင်ယူမှုစိတ်ကြိုက်ပုံနှင့် ကိုက်ညီသော ဘာသာရပ်များကို ရှာဖွေပါ။",
+        "quizHub.combined.title":"Combined စမ်းသပ်မှု",
+        "quizHub.combined.desc":"Aptitude + စိတ်ဝင်စားမှုများကို ပေါင်းစည်းထားသည့် ရိုးရှင်းလျင်မြန်သော စုစည်းပြိုင်ဆိုင်ချက်။",
+        "quizHub.cse.title":"Educational စမ်းသပ်မှု (CSE)",
+        "quizHub.cse.desc":"နည်းပညာကို စိတ်ဝင်စားသူများအတွက် CS/Engineering လမ်းကြောင်းကို ရှာဖွေပါ။",
+        "quizHub.start":"စတင်ရန်",
+        "quizHub.helpTitle":"မည်သို့စတင်ရမည်မသေချာဘူးလား?",
+        "quizHub.helpSub":"အရင်ဆုံး Combined စမ်းသပ်မှုကို ဖြေဆိုပြီး နောက်တစ်ဆင့် Aptitude သို့မဟုတ် Educational ဖြင့် ဆက်လက်လေ့လာပါ။",
+        "quizHub.takeCombined":"ပထမဦးဆုံး Combined ဖြေကြည့်ပါ"
+
+      },
+      zh: {
+        "nav.home":"首页","nav.howItWorks":"工作原理","nav.successStories":"成功故事","nav.contactUs":"职业路径","nav.getStarted":"开始使用", "nav.archiPaths":"建筑路径",
+        "hero.trusted":"受15,000+求职者信赖","hero.title":"找到您的完美职业匹配","hero.subtitle":"数据驱动的职业发现，将您的个性、技能和抱负与理想的职业路径相匹配","hero.cta.quiz":"参加职业测试","hero.cta.learnMore":"了解更多",
+        "stats.satisfaction":"满意度","stats.users":"已帮助用户","stats.careers":"职业路径","stats.quizTime":"平均测试时间",
+        "howItWorks.title":"NeonX工作原理","howItWorks.subtitle":"发现理想职业路径的三个简单步骤","howItWorks.step1.title":"个性化评估","howItWorks.step1.description":"完成我们科学设计的测试，揭示您的优势、兴趣和工作偏好","howItWorks.step2.title":"智能匹配","howItWorks.step2.description":"我们的人工智能将您的结果与数百种职业路径进行分析，找到您的完美匹配","howItWorks.step3.title":"行动计划","howItWorks.step3.description":"获得包含步骤、资源和时间表的定制路线图，以实现您的职业目标",
+        "testimonials.title":"成功故事","testimonials.subtitle":"听听通过NeonX发现职业路径的人们的故事","testimonials.job1":"软件工程师","testimonials.job2":"UX设计师","testimonials.job3":"数据分析师",
+        "testimonials.quote1":"NeonX帮助我从普通的商业学位转向专注的技术职业。个性化路线图正是我找到第一份开发工作所需要的",
+        "testimonials.quote2":"我当时正在考虑多个职业选择，感到不知所措。测试结果指向了UX设计，这是我之前没有认真考虑但现在非常热爱的领域",
+        "testimonials.quote3":"作为一名应届毕业生，我一直在努力寻找方向。NeonX不仅确定了数据分析是我理想的领域，还提供了获得必要技能的清晰路径",
+        "cta.title":"准备好发现您的职业路径了吗？","cta.subtitle":"参加我们10分钟的评估，根据您独特的个人资料、技能和兴趣获得个性化的职业推荐","cta.button":"开始免费评估",
+        "footer.about":"通过数据驱动的评估和个性化指导，帮助个人发现理想的职业路径","footer.company":"公司","footer.aboutUs":"关于我们","footer.careers":"职业机会","footer.blog":"博客","footer.press":"新闻媒体","footer.resources":"资源","footer.careerGuides":"职业指南","footer.skillAssessments":"技能评估","footer.faq":"常见问题","footer.support":"支持","footer.newsletter":"保持更新","footer.newsletterSubtitle":"订阅我们的通讯，获取职业建议和更新","footer.emailPlaceholder":"您的电子邮件地址","footer.subscribe":"订阅","footer.rights":"保留所有权利",
+        "quizHub.title":"选择一个测评",
+        "quizHub.heading":"从最符合你目标的路径开始",
+        "quizHub.subtitle":"先选一个开始吧。可以多次测评，匹配结果会越来越准。",
+        "quizHub.aptitude.title":"能力倾向测试",
+        "quizHub.aptitude.desc":"评估推理、模式识别与问题解决速度。",
+        "quizHub.educitional.title":"学习取向测试",   // optional alt key if needed
+        "quizHub.educational.title":"教育取向测试",
+        "quizHub.educational.desc":"了解适合你的学习偏好与优势学科。",
+        "quizHub.combined.title":"综合测试",
+        "quizHub.combined.desc":"将能力倾向与兴趣合并的简版测试，快速获得总体匹配。",
+        "quizHub.cse.title":"教育取向测试（CSE）",
+        "quizHub.cse.desc":"面向理工方向：定位合适的计算机/工程路径。",
+        "quizHub.start":"开始",
+        "quizHub.helpTitle":"不确定从哪里开始？",
+        "quizHub.helpSub":"先做综合测试，然后再用能力倾向或教育取向测试深挖。",
+        "quizHub.takeCombined":"先试综合测试"
+
+      }
+    };
+
+    // Theme Management
+    const themeToggle = document.getElementById('themeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    if (currentTheme === 'light') document.body.classList.add('light-theme');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-theme');
+        const newTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        localStorage.setItem('theme', newTheme);
+      });
+    }
+
+    // Language Management
+    const languageBtn = document.getElementById('languageBtn');
+    const languageDropdown = document.getElementById('languageDropdown');
+    const savedLang = localStorage.getItem('language') || 'en';
+    const currentLanguageElement = document.getElementById('currentLanguage');
+    if (currentLanguageElement) currentLanguageElement.textContent = savedLang.toUpperCase();
+    updateContent(savedLang);
+
+    if (languageBtn) languageBtn.addEventListener('click', () => languageDropdown.classList.toggle('show'));
+    document.addEventListener('click', (e) => {
+      if (!languageBtn?.contains(e.target) && !languageDropdown?.contains(e.target)) {
+        languageDropdown?.classList.remove('show');
+      }
+    });
+    document.querySelectorAll('.language-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const lang = opt.getAttribute('data-lang');
+        document.querySelectorAll('.language-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        if (currentLanguageElement) currentLanguageElement.textContent = lang.toUpperCase();
+        updateContent(lang);
+        localStorage.setItem('language', lang);
+        languageDropdown?.classList.remove('show');
+      });
+    });
+
+    function updateContent(lang) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang]?.[key]) el.textContent = translations[lang][key];
+      });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang]?.[key]) el.setAttribute('placeholder', translations[lang][key]);
+      });
+    }
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (!navbar) return;
+      if (window.scrollY > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    });
+
+    // Animation on scroll
+    document.addEventListener('DOMContentLoaded', function () {
+      const fadeElements = document.querySelectorAll('.fade-in-up');
+      const fadeInOnScroll = function () {
+        fadeElements.forEach(el => {
+          const top = el.getBoundingClientRect().top;
+          if (top < window.innerHeight - 150) {
+            el.style.opacity = "1";
+            el.style.transform = "translateY(0)";
+          }
+        });
+      };
+      fadeElements.forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(30px)";
+        el.style.transition = "opacity 0.8s ease, transform 0.8s ease";
+      });
+      fadeInOnScroll();
+      window.addEventListener('scroll', fadeInOnScroll);
+    });
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

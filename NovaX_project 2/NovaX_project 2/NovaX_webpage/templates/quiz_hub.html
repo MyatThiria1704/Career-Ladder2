@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}NeonX | Choose Your Test{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="container">
+    <div class="hero-content text-center">
+      <div class="hero-badge fade-in-up">
+        <i class="bi bi-joystick"></i>
+        <span data-i18n="quizHub.title">Choose your assessment</span>
+      </div>
+      <h1 class="fade-in-up" data-i18n="quizHub.heading">Start the path that fits your goal</h1>
+      <p class="subtext mx-auto fade-in-up delay-1" data-i18n="quizHub.subtitle">
+        Pick a test to begin. You can take more than one—your matches get better with every result.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Aptitude -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card fade-in-up">
+          <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
+          <h3 data-i18n="quizHub.aptitude.title">Aptitude Test</h3>
+          <p data-i18n="quizHub.aptitude.desc">Measure reasoning, pattern recognition and problem-solving speed.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3 mb-3">
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">~10 min</span>
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">25 Qs</span>
+          </div>
+          <a href="{% url 'career_counseling' %}" class="btn btn-primary-custom w-100" data-i18n="quizHub.start">Start</a>
+        </div>
+      </div>
+
+      <!-- Combined -->
+      <div class="col-lg-3 col-md-6">
+        <div class="feature-card fade-in-up delay-2">
+          <div class="feature-icon"><i class="bi bi-intersect"></i></div>
+          <h3 data-i18n="quizHub.combined.title">Combined Test</h3>
+          <p data-i18n="quizHub.combined.desc">A condensed mix of aptitude + interests for a quick overall match.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3 mb-3">
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">~12 min</span>
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">28 Qs</span>
+          </div>
+          <a href="{% url 'combined_test_Q' %}" class="btn btn-primary-custom w-100" data-i18n="quizHub.start">Start</a>
+        </div>
+      </div>
+
+      <!-- Educational (CSE / Major Selection) -->
+      {% comment %} <div class="col-lg-3 col-md-6">
+        <div class="feature-card fade-in-up delay-3">
+          <div class="feature-icon"><i class="bi bi-mortarboard"></i></div>
+          <h3 data-i18n="quizHub.cse.title">Educational Test</h3>
+          <p data-i18n="quizHub.cse.desc">For tech-inclined students: find the right CS/Engineering direction.</p>
+          <div class="d-flex justify-content-center gap-2 mt-3 mb-3">
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">~7 min</span>
+            <span class="badge rounded-pill" style="background: var(--secondary-bg); color: var(--text-secondary);">18 Qs</span>
+          </div>
+          <a href="{% url 'educational_major_selection' %}" class="btn btn-primary-custom w-100" data-i18n="quizHub.start">Start</a>
+        </div>
+      </div> {% endcomment %}
+
+    </div>
+  </div>
+</section>
+
+<section class="section pt-0">
+  <div class="container">
+    <div class="cta-section">
+      <div class="cta-content">
+        <h2 data-i18n="quizHub.helpTitle">Not sure where to start?</h2>
+        <p data-i18n="quizHub.helpSub">Take the Combined Test first, then dive deeper with Aptitude or Educational tests.</p>
+        <a href="{% url 'combined_test_Q' %}" class="btn btn-cta-light btn-lg" data-i18n="quizHub.takeCombined">Try Combined First</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

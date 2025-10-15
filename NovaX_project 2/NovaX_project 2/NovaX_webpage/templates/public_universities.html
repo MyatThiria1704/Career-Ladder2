@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Public Universities - Architecture - NovaX</title>
+<style>
+  :root {
+    --emerald:#10b981;
+    --teal:#14b8a6;
+    --text-dark:#1e293b;
+    --text-mid:#64748b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    background: linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width:1200px; margin:0 auto; padding:40px 20px; }
+  .back-btn {
+    display:inline-flex; align-items:center; gap:8px;
+    color:#64748b; text-decoration:none; font-weight:500;
+    margin-bottom:32px; transition:color 0.2s;
+  }
+  .back-btn:hover { color:#1e293b; }
+  .header { margin-bottom:48px; }
+  .header h1 { font-size:2.5rem; color:#1e293b; margin-bottom:16px; }
+  .header p { font-size:1.125rem; color:var(--text-mid); }
+  .card {
+    background:white; border-radius:12px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom:24px; overflow:hidden;
+    transition:box-shadow 0.3s, transform 0.3s;
+  }
+  .card:hover { transform:translateY(-4px); box-shadow:0 12px 20px rgba(0,0,0,0.12); }
+  .row { display:flex; flex-wrap:wrap; }
+  .col-main { flex:2; padding:32px; }
+  .col-badge {
+    flex:1; background:linear-gradient(135deg,var(--emerald),var(--teal));
+    display:flex; align-items:center; justify-content:center;
+    color:white; text-align:center;
+  }
+  .col-badge h2 { font-size:3rem; font-weight:700; margin-bottom:6px; }
+  .col-badge small { opacity:0.9; }
+  .meta { color:var(--text-mid); margin-bottom:8px; }
+  .meta i { color:var(--emerald); margin-right:6px; }
+  .desc { color:#475569; margin-bottom:24px; line-height:1.6; }
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:6px; padding:10px 22px; border-radius:30px; text-decoration:none;
+    font-weight:600; font-size:0.95rem; transition:0.2s all;
+  }
+  .btn-success { background:var(--emerald); color:white; }
+  .btn-success:hover { background:#059669; }
+  .btn-outline-success {
+    color:var(--emerald); border:2px solid var(--emerald); background:transparent;
+  }
+  .btn-outline-success:hover { background:#f0fdf4; }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Architecture Path
+    </a>
+
+    <div class="header">
+      <h1>Public Universities</h1>
+      <p>Explore architecture programs at Myanmar's leading public universities.</p>
+    </div>
+
+    {% for uni in universities %}
+    <div class="card">
+      <div class="row">
+        <div class="col-main">
+          <h4 style="margin-bottom:12px;">{{ uni.name }} ({{ uni.abbreviation }})</h4>
+          <p class="meta">
+            <i class="bi bi-geo-alt"></i>{{ uni.location }} &nbsp;&nbsp;
+            <i class="bi bi-calendar"></i> Est. {{ uni.established }}
+          </p>
+          <p class="desc">{{ uni.description }}</p>
+          <a href="{% url 'public_university_detail' uni.id %}" class="btn btn-success me-2">
+            View Details <i class="bi bi-arrow-right-short"></i>
+          </a>
+          {% if uni.website %}
+          <a href="{{ uni.website }}" target="_blank" class="btn btn-outline-success">
+            Visit Website <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+          {% endif %}
+        </div>
+        <div class="col-badge">
+          <div>
+            <h2>{{ uni.abbreviation }}</h2>
+            <small>Public University</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+      <p>No public universities found.</p>
+    {% endfor %}
+  </div>
+</body>
+</html>

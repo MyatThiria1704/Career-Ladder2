@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Alignment Test</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the slider tracks and thumb for better visibility */
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #d1d5db; /* gray-300 */
+            height: 8px;
+            border-radius: 4px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4f46e5; /* indigo-600 */
+            border-radius: 50%;
+            cursor: pointer;
+            margin-top: -6px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8 font-sans antialiased">
+
+    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-xl p-6 md:p-10 border border-gray-100">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Career Alignment Test</h1>
+            <p class="text-gray-500">Rate yourself on a scale of 1 (Low) to 10 (High) for each trait.</p>
+        </header>
+
+        <!-- Form for Data Collection -->
+        <form id="prediction-form" class="space-y-6">
+
+            <!-- Helper function to create a slider input group -->
+            <script>
+                function createSlider(feature, question, initialValue = 5) {
+                    const group = document.createElement('div');
+                    group.className = 'p-4 border border-indigo-100 rounded-lg bg-indigo-50 shadow-sm';
+                    
+                    const label = document.createElement('label');
+                    label.htmlFor = feature;
+                    label.className = 'block text-sm font-semibold text-gray-700 mb-2';
+                    label.textContent = question;
+
+                    const slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.id = feature;
+                    slider.name = feature;
+                    slider.min = '1';
+                    slider.max = '10';
+                    slider.step = '1';
+                    slider.value = initialValue.toString();
+                    slider.className = 'w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg';
+
+                    const valueDisplay = document.createElement('div');
+                    valueDisplay.id = feature + '-value';
+                    valueDisplay.className = 'text-center text-lg font-bold text-indigo-600 mt-1';
+                    valueDisplay.textContent = initialValue;
+
+                    slider.oninput = () => {
+                        valueDisplay.textContent = slider.value;
+                    };
+
+                    group.appendChild(label);
+                    group.appendChild(slider);
+                    group.appendChild(valueDisplay);
+
+                    return group;
+                }
+
+                // Feature list in order expected by Django backend
+                const featureConfig = [
+                    { key: "O_score", q: "How open are you to new experiences, creativity, and trying new things?" },
+                    { key: "C_score", q: "How organized, responsible, and goal-oriented are you? သင်သည် စည်းကမ်းရှိ၍ တာဝန်ယူမှု၊ တာဝန်ခံမှု နှင့် ရည်မှန်းချက် ရှိသူ ဖြစ်ပါသလား။" },
+                    { key: "E_score", q: "How outgoing, energetic, and talkative are you? သင်သည် လူမူဆက်ဆံရေးကောင်းပြီး အပြောအဆို ပြေပြစ်သူ ဖြစ်ပါသလား။" },
+                    { key: "A_score", q: "How cooperative, kind, and empathetic are you toward others? သင်သည် တခြားသူများအပေါ် ကြင်နာတတ်၍ ဖေးမကူညီလိုစိတ်ရှိသူ ဖြစ်ပါသလား။" },
+                    { key: "N_score", q: "How often do you experience emotional ups and downs (anxiety, stress, etc.)? သင်သည် စိတ်အတက်အကျများ၊ စိတ်လှုပ်ရှားမှုများ အလွန်အကျွံ ဖြစ်တတ်ပါသလား။" },
+                    { key: "Numerical_Aptitude", q: "How strong are you in understanding and solving numerical or mathematical problems? သင်သည် သင်္ချာနှင့် ကိန်းဂဏန်းဆိုင်ရာ ပြဿနာများကို ဖြေရှင်းနိုင်မှု မည်မျှကောင်းပါသလဲ။" },
+                    { key: "Verbal_Aptitude", q: "How good are you at understanding written/spoken information and expressing ideas clearly? သင်၏ စာရေးသား ဖတ်ရှုခြင်းနဲ့ စကားပြောမှုစွမ်းရည် မည်မျှကောင်းပါသလဲ။" },
+                    { key: "Abstract_Reasoning", q: "How well do you recognize patterns and relationships in data or visuals? သင်သည် ရုပ်ပုံ (သို့မဟုတ်) အချက်အလက်များနှင့် ပက်သက်သည့် ဆက်နွယ်မှု ပုံစံများကို စိတ်ဝင်စားပါသလား။" },
+                    { key: "Logical_Reasoning", q: "How strong are your logical thinking and problem-solving abilities? သင်သည် အချက်ကျကျ တွေးခေါ်ခြင်းနှင့် ပြဿနာ ဖြေရှင်းမှုစွမ်းရည် မည်မျှကောင်းပါသလဲ။" },
+                    { key: "Spatial_Aptitude", q: "How easily can you remember or navigate maps, routes, or locations? သင်သည် မြေပုံများ၊ လမ်းကြောင်းများ (သို့မဟုတ်) တည်နေရာများကို မှတ်မိနိုင်စွမ်း မည်မျှကောင်းပါသလဲ။" },
+                    { key: "Enjoy_Teamwork", q: "How much do you enjoy working as part of a team?" },
+                    { key: "Creative_Thinking", q: "How often do you think of innovative or original solutions?" },
+                    { key: "Attention_to_Detail", q: "How carefully do you focus on details and accuracy?" }
+                ];
+                
+                document.addEventListener('DOMContentLoaded', () => {
+                    const formContainer = document.getElementById('form-inputs');
+                    featureConfig.forEach(config => {
+                        formContainer.appendChild(createSlider(config.key, config.q));
+                    });
+                });
+            </script>
+            
+            <div id="form-inputs" class="space-y-6">
+                <!-- Sliders will be dynamically inserted here by the script above -->
+            </div>
+
+            <!-- Non-prediction input
+            <div class="p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+                <label for="current_career" class="block text-sm font-semibold text-gray-700 mb-2">
+                    What is your current or desired career? (For context, not used in prediction)
+                    <span class="text-gray-500 font-normal block">သင်၏ လက်ရှိ (သို့မဟုတ်) မျှော်မှန်းထားသော အလုပ်အကိုင်အမျိုးအစားကို ထည့်ပါ။</span>
+                </label>
+                <input type="text" id="current_career" name="current_career" 
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+                       placeholder="e.g., Software Developer">
+            </div> -->
+            
+            <div class="text-center pt-4">
+                <button type="submit" id="submit-button" class="transition ease-in-out duration-300 transform hover:scale-105 bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 shadow-lg rounded-full px-8 py-3">
+                    Get Career Predictions
+                </button>
+            </div>
+        </form>
+
+        <!-- Status and Results Area -->
+        <div class="mt-10 pt-6 border-t border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">Results</h2>
+            <div id="loading-message" class="hidden text-center text-indigo-600 font-medium">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-500 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Predicting careers using ensemble model...
+            </div>
+            <div id="results-container" class="space-y-4">
+                <p class="text-gray-500 italic">Submit the form above to see your top 3 career predictions.</p>
+            </div>
+            <div id="error-message" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('prediction-form');
+            const resultsContainer = document.getElementById('results-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Re-define the features array here for the JavaScript logic, ensuring the order matches the Django view
+            const features = [
+                "O_score", "C_score", "E_score", "A_score", "N_score",
+                "Numerical_Aptitude", "Verbal_Aptitude", "Abstract_Reasoning",
+                "Logical_Reasoning", "Spatial_Aptitude",
+                "Enjoy_Teamwork", "Creative_Thinking", "Attention_to_Detail"
+            ];
+
+            // Utility function to display custom messages
+            function displayMessage(element, text, isError = false) {
+                element.textContent = text;
+                element.classList.remove('hidden');
+                if (isError) {
+                    element.classList.remove('bg-green-100', 'text-green-700');
+                    element.classList.add('bg-red-100', 'text-red-700');
+                } else {
+                    element.classList.remove('bg-red-100', 'text-red-700');
+                    element.classList.add('bg-green-100', 'text-green-700');
+                }
+            }
+            
+            // Function to display the top 3 predictions in a structured list
+            function displayPredictions(predictions) {
+                let html = `
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Top 3 Career Matches:</h3>
+                    <ol class="list-decimal list-inside space-y-3">
+                `;
+                predictions.forEach((p, index) => {
+                    // Use a simple color indicator based on probability or rank
+                    const color = index === 0 ? 'text-indigo-600 font-extrabold' : 'text-gray-700 font-semibold';
+                    
+                    html += `
+                        <li class="pl-2 border-l-4 border-indigo-400 p-2 rounded-md transition duration-200 ${index === 0 ? 'bg-indigo-50 shadow-md' : 'bg-gray-50'}">
+                            <span class="${color}">${p.career}</span> 
+                            <span class="text-sm text-gray-500 float-right">Confidence: ${p.probability}%</span>
+                        </li>
+                    `;
+                });
+                html += '</ol>';
+                resultsContainer.innerHTML = html;
+            }
+
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); 
+
+                // Reset status
+                resultsContainer.innerHTML = '<p class="text-gray-500 italic">Waiting for results...</p>';
+                errorMessage.classList.add('hidden');
+                loadingMessage.classList.remove('hidden');
+
+                const data = {};
+                let isValid = true;
+                
+                // 1. Gather numerical data for prediction
+                for (const feat of features) {
+                    const inputElement = document.getElementById(feat);
+                    const value = inputElement ? inputElement.value : null;
+
+                    if (value === null || value.trim() === '') {
+                        displayMessage(errorMessage, `Error: Missing value for ${feat}. Please complete all 13 ratings.`, true);
+                        isValid = false;
+                        break;
+                    }
+                    // All data is expected as a float/number in the Django view
+                    data[feat] = parseFloat(value);
+                }
+
+                if (!isValid) {
+                    loadingMessage.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    // 2. Send data to the Django endpoint
+                    const response = await fetch('/predict-career/', { // Check your urls.py for the correct path
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        // Only send the 13 prediction features
+                        body: JSON.stringify(data) 
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        // SUCCESS: Display the predictions
+                        displayPredictions(result.predictions);
+                    } else {
+                        // API returned an error (e.g., status 400 or 503)
+                        const errorDetail = result.error || 'Could not get prediction. Check server logs.';
+                        displayMessage(errorMessage, `Prediction Error: ${errorDetail}`, true);
+                    }
+
+                } catch (error) {
+                    // Network or other unexpected error
+                    displayMessage(errorMessage, `Network Error: Could not connect to the server. (${error.message})`, true);
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

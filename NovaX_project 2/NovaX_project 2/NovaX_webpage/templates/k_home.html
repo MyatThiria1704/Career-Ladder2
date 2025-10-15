@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}NeonX | Discover Your Career Path{% endblock %}
+
+{% block content %}
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content text-center">
+        <div class="hero-badge fade-in-up">
+          <i class="bi bi-star-fill"></i>
+          <span data-i18n="hero.trusted">Trusted by 15,000+ career seekers</span>
+        </div>
+        <h1 class="fade-in-up" data-i18n="hero.title">Find Your Perfect Career Match</h1>
+        <p class="subtext mx-auto fade-in-up delay-1" data-i18n="hero.subtitle">
+          Data-driven career discovery that matches your personality, skills, and ambitions with ideal career paths.
+        </p>
+        <div class="d-flex flex-column flex-md-row justify-content-center gap-3 fade-in-up delay-2">
+          <a href="#quiz" class="btn btn-primary-custom" data-i18n="hero.cta.quiz">Take the Career Quiz</a>
+          <a href="#how-it-works" class="btn btn-secondary-custom" data-i18n="hero.cta.learnMore">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="section">
+    <div class="container">
+      <div class="stats-section">
+        <div class="row text-center">
+          <div class="col-md-3 col-6">
+            <div class="stat-item">
+              <div class="stat-number">94%</div>
+              <div class="stat-label" data-i18n="stats.satisfaction">Satisfaction Rate</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-item">
+              <div class="stat-number">15K+</div>
+              <div class="stat-label" data-i18n="stats.users">Users Helped</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-item">
+              <div class="stat-number">200+</div>
+              <div class="stat-label" data-i18n="stats.careers">Career Paths</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="stat-item">
+              <div class="stat-number">10min</div>
+              <div class="stat-label" data-i18n="stats.quizTime">Average Quiz Time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="section">
+    <div class="container">
+      <h2 class="section-title" data-i18n="howItWorks.title">How NeonX Works</h2>
+      <p class="section-subtitle" data-i18n="howItWorks.subtitle">Three simple steps to discover your ideal career path</p>
+
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card fade-in-up">
+            <div class="feature-icon"><i class="bi bi-person-check"></i></div>
+            <h3 data-i18n="howItWorks.step1.title">Personalized Assessment</h3>
+            <p data-i18n="howItWorks.step1.description">Complete our scientifically-designed quiz to uncover your strengths, interests, and work preferences.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card fade-in-up delay-1">
+            <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <h3 data-i18n="howItWorks.step2.title">Smart Matching</h3>
+            <p data-i18n="howItWorks.step2.description">Our AI analyzes your results against hundreds of career paths to find your perfect matches.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="feature-card fade-in-up delay-2">
+            <div class="feature-icon"><i class="bi bi-map"></i></div>
+            <h3 data-i18n="howItWorks.step3.title">Action Plan</h3>
+            <p data-i18n="howItWorks.step3.description">Get a customized roadmap with steps, resources, and timelines to achieve your career goals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="section">
+    <div class="container">
+      <h2 class="section-title" data-i18n="testimonials.title">Success Stories</h2>
+      <p class="section-subtitle" data-i18n="testimonials.subtitle">Hear from people who discovered their career path with NeonX</p>
+
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="testimonial-card fade-in-up">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">AJ</div>
+              <div class="testimonial-info">
+                <h4>Alex Johnson</h4>
+                <p data-i18n="testimonials.job1">Software Engineer</p>
+              </div>
+            </div>
+            <p class="quote" data-i18n="testimonials.quote1">NeonX helped me transition from a generic business degree to a focused tech career. The personalized roadmap was exactly what I needed to land my first developer job.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="testimonial-card fade-in-up delay-1">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">SM</div>
+              <div class="testimonial-info">
+                <h4>Sophia Martinez</h4>
+                <p data-i18n="testimonials.job2">UX Designer</p>
+              </div>
+            </div>
+            <p class="quote" data-i18n="testimonials.quote2">I was considering multiple career options and feeling overwhelmed. The quiz results pointed me toward UX design, which I hadn't seriously considered but now love.</p>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="testimonial-card fade-in-up delay-2">
+            <div class="testimonial-header">
+              <div class="testimonial-avatar">DR</div>
+              <div class="testimonial-info">
+                <h4>David Rodriguez</h4>
+                <p data-i18n="testimonials.job3">Data Analyst</p>
+              </div>
+            </div>
+            <p class="quote" data-i18n="testimonials.quote3">As a recent graduate, I was struggling to find direction. NeonX not only identified data analysis as my ideal field but provided a clear path to gain the necessary skills.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="quiz" class="section">
+    <div class="container">
+      <div class="cta-section">
+        <div class="cta-content">
+          <h2 data-i18n="cta.title">Ready to Discover Your Career Path?</h2>
+          <p data-i18n="cta.subtitle">Take our 10-minute assessment and receive personalized career recommendations based on your unique profile, skills, and interests.</p>
+          <a href="#" class="btn btn-cta-light btn-lg">
+            <span data-i18n="cta.button">Start Free Assessment</span> <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

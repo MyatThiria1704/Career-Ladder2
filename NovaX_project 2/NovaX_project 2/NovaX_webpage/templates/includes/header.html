@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">Neon<span>X</span></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link{% if request.resolver_match.url_name == 'home' %} active{% endif %}"
+             href="{% url 'home' %}" data-i18n="nav.home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.resolver_match.url_name == 'quiz_hub' %} active{% endif %}"
+             href="{% url 'quiz_hub' %}" data-i18n="nav.howItWorks">Take Quiz</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.resolver_match.url_name == 'about' %} active{% endif %}"
+             href="{% url 'about' %}" data-i18n="nav.successStories">About us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
+             href="{% url 'contact' %}" data-i18n="nav.contactUs">Contact us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link{% if request.resolver_match.url_name == 'contact' %} active{% endif %}"
+             href="{% url 'architecture_path' %}" data-i18n="nav.archiPaths">Architecture Path</a>
+        </li>
+        
+
+        <li class="ms-lg-3 d-flex align-items-center gap-2">
+          <div class="language-selector">
+            <button class="language-btn" id="languageBtn">
+              <i class="bi bi-globe"></i>
+              <span id="currentLanguage">EN</span>
+              <i class="bi bi-chevron-down"></i>
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+              <div class="language-option active" data-lang="en"><span>English</span></div>
+              <div class="language-option" data-lang="my"><span>မြန်မာ</span></div>
+              <div class="language-option" data-lang="zh"><span>中文</span></div>
+            </div>
+          </div>
+
+          <button class="theme-toggle" id="themeToggle">
+            <i class="bi bi-moon-fill"></i>
+            <i class="bi bi-sun"></i>
+          </button>
+
+          <a href="#" class="btn btn-primary-custom" data-i18n="nav.getStarted">Get Started</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

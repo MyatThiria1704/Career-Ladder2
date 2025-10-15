@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaX AI Career Counselor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        dark: {
+                            50: '#1e293b',
+                            100: '#1e293b',
+                            200: '#334155',
+                            300: '#475569',
+                            400: '#64748b',
+                            500: '#94a3b8',
+                            600: '#cbd5e1',
+                            700: '#e2e8f0',
+                            800: '#f1f5f9',
+                            900: '#f8fafc',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 50%, #0284c7 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .message-bubble {
+            animation: fadeInUp 0.3s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .typing-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            margin: 0 2px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-indicator:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .edit-options {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        
+        .edit-option-item {
+            padding: 10px 14px;
+            margin: 6px 0;
+            background: rgba(51, 65, 85, 0.6);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .edit-option-item:hover {
+            background: rgba(71, 85, 105, 0.8);
+            border-color: #0ea5e9;
+            transform: translateX(4px);
+        }
+        
+        .premium-glow {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Premium Header -->
+        <div class="text-center mb-8">
+            <div class="glass-effect rounded-2xl p-6 mb-4 premium-glow">
+                <h1 class="text-4xl font-bold text-white mb-3">
+                    <i class="fas fa-star text-yellow-400 mr-3"></i>
+                    NovaX Career Intelligence
+                </h1>
+                <p class="text-blue-100 text-lg">AI-Powered Career Discovery Platform</p>
+            </div>
+            <div class="flex justify-center space-x-4 text-sm text-blue-200">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    <span>Secure & Private</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-brain mr-2"></i>
+                    <span>AI-Powered Insights</span>
+                </div>
+                <div class="flex items-center">
+                    <i class="fas fa-chart-line mr-2"></i>
+                    <span>Data-Driven Results</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Chat Container -->
+        <div class="glass-effect rounded-2xl p-6 mb-6 premium-glow">
+            <!-- Conversation Area -->
+            <div id="conversation-container" class="h-96 overflow-y-auto mb-6 p-4 bg-dark-50 rounded-xl space-y-4">
+                <!-- Welcome Message -->
+                <div class="text-center py-8">
+                    <i class="fas fa-robot text-4xl text-primary-400 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Welcome to Your Career Journey</h3>
+                    <p class="text-blue-200">Start your personalized assessment to discover career paths that match your unique personality and strengths.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div id="input-area" class="flex space-x-3 items-start hidden">
+                <div class="flex-1 flex space-x-3">
+                    <input 
+                        type="text" 
+                        id="user-input" 
+                        placeholder="Enter your rating (1-10) or type 'edit' to make changes..."
+                        class="flex-1 px-4 py-3 bg-dark-100 border border-dark-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-white placeholder-blue-300"
+                    >
+                    <button 
+                        id="edit-btn"
+                        class="px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all duration-200 font-semibold hidden"
+                        title="Edit previous answers"
+                    >
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+                <button 
+                    id="send-btn"
+                    class="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl transition-all duration-200 font-semibold flex items-center"
+                >
+                    Send <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+
+            <!-- Start Button -->
+            <div id="start-area" class="text-center">
+                <button 
+                    id="start-btn"
+                    class="px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl transition-all duration-300 font-semibold text-lg premium-glow transform hover:scale-105"
+                >
+                    <i class="fas fa-play-circle mr-3"></i> Begin Career Assessment
+                </button>
+                <p class="text-blue-200 mt-4 text-sm">
+                    <i class="fas fa-clock mr-2"></i> Takes 3-5 minutes • <i class="fas fa-lock mr-2"></i> Your data is secure
+                </p>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results-area" class="hidden glass-effect rounded-2xl p-6 premium-glow">
+            <div class="text-center mb-6">
+                <i class="fas fa-chart-network text-4xl text-green-400 mb-3"></i>
+                <h2 class="text-2xl font-bold text-white mb-2">Your Career Matches</h2>
+                <p class="text-blue-200">Based on your unique profile, here are your top career recommendations</p>
+            </div>
+            <div id="predictions-list" class="space-y-4">
+                <!-- Predictions will appear here -->
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex justify-center space-x-4 mt-8 pt-6 border-t border-dark-300">
+                <button 
+                    onclick="restartAssessment()"
+                    class="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl transition-all duration-200 font-semibold"
+                >
+                    <i class="fas fa-redo mr-2"></i> Start New Assessment
+                </button>
+                <button 
+                    onclick="downloadResults()"
+                    class="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-all duration-200 font-semibold"
+                >
+                    <i class="fas fa-download mr-2"></i> Download Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentField = '';
+        let conversationStep = '';
+        let isProcessing = false;
+
+        // DOM Elements
+        const startArea = document.getElementById('start-area');
+        const inputArea = document.getElementById('input-area');
+        const conversationContainer = document.getElementById('conversation-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const startBtn = document.getElementById('start-btn');
+        const editBtn = document.getElementById('edit-btn');
+        const resultsArea = document.getElementById('results-area');
+        const predictionsList = document.getElementById('predictions-list');
+
+        // Initially hide input area
+        inputArea.style.display = 'none';
+
+        // Start counseling session
+        startBtn.addEventListener('click', startCounseling);
+        sendBtn.addEventListener('click', processAnswer);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !isProcessing) processAnswer();
+        });
+        editBtn.addEventListener('click', () => {
+            userInput.value = 'edit';
+            processAnswer();
+        });
+
+        async function startCounseling() {
+            try {
+                const response = await fetch('/start-counseling/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Show conversation interface
+                    startArea.style.display = 'none';
+                    inputArea.style.display = 'flex';
+                    
+                    // Clear welcome message and add initial messages
+                    conversationContainer.innerHTML = '';
+                    addMessage('bot', data.message);
+                    addMessage('bot', data.next_question);
+                    
+                    currentField = data.field;
+                    conversationStep = data.conversation_step;
+                    
+                    userInput.focus();
+                    updateUIState();
+                }
+            } catch (error) {
+                console.error('Error starting counseling:', error);
+                showError('Error starting counseling session. Please try again.');
+            }
+        }
+
+        async function processAnswer() {
+            if (isProcessing) return;
+            
+            const answer = userInput.value.trim();
+            
+            if (!answer) {
+                showError('Please enter your response');
+                return;
+            }
+
+            isProcessing = true;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending';
+
+            // Add user message to conversation
+            addMessage('user', answer);
+            userInput.value = '';
+
+            try {
+                const response = await fetch('/process-answer/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        answer: answer,
+                        field: currentField
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Handle edit options display
+                    if (data.edit_options) {
+                        displayEditOptions(data.edit_options, data.message, data.next_question);
+                    } else {
+                        if (data.message) {
+                            addMessage('bot', data.message);
+                        }
+                        
+                        if (data.next_question) {
+                            addMessage('bot', data.next_question);
+                        }
+                    }
+                    
+                    currentField = data.field;
+                    conversationStep = data.conversation_step;
+                    
+                    updateUIState();
+                    
+                    if (data.completed) {
+                        inputArea.style.display = 'none';
+                        showResults(data.predictions);
+                    }
+                } else {
+                    showError(data.error || 'An error occurred');
+                }
+            } catch (error) {
+                console.error('Error processing answer:', error);
+                showError('Error processing your answer. Please try again.');
+            } finally {
+                isProcessing = false;
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = 'Send <i class="fas fa-paper-plane ml-2"></i>';
+            }
+        }
+
+        function addMessage(type, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex message-bubble ${type === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-xs lg:max-w-md px-4 py-3 rounded-2xl ${
+                type === 'user' 
+                    ? 'bg-primary-500 text-white rounded-br-none' 
+                    : 'bg-dark-200 text-white rounded-bl-none border border-dark-300'
+            }`;
+            
+            // Add typing indicator for bot messages
+            if (type === 'bot') {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'flex space-x-1 mb-2';
+                typingDiv.innerHTML = `
+                    <div class="typing-indicator"></div>
+                    <div class="typing-indicator"></div>
+                    <div class="typing-indicator"></div>
+                `;
+                bubble.appendChild(typingDiv);
+                
+                // Simulate typing delay
+                setTimeout(() => {
+                    typingDiv.remove();
+                    bubble.innerHTML = `<p class="text-sm leading-relaxed">${message}</p>`;
+                }, 1000);
+            } else {
+                bubble.innerHTML = `<p class="text-sm leading-relaxed">${message}</p>`;
+            }
+            
+            messageDiv.appendChild(bubble);
+            conversationContainer.appendChild(messageDiv);
+            conversationContainer.scrollTop = conversationContainer.scrollHeight;
+        }
+
+        function displayEditOptions(editOptions, message, nextQuestion) {
+            addMessage('bot', message);
+            
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'edit-options';
+            
+            const optionsHtml = editOptions.map((option, index) => {
+                const description = getFieldDescription(option);
+                return `
+                    <div class="edit-option-item" onclick="selectEditOption('${option}')">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <strong class="text-primary-300">${index + 1}.</strong>
+                                <span class="ml-2 text-white">${description}</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-primary-400"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            optionsDiv.innerHTML = optionsHtml;
+            conversationContainer.appendChild(optionsDiv);
+            
+            if (nextQuestion) {
+                addMessage('bot', nextQuestion);
+            }
+            
+            conversationContainer.scrollTop = conversationContainer.scrollHeight;
+        }
+
+        function getFieldDescription(field) {
+            const descriptions = {
+                'C_score': 'Organization & Attention to Detail',
+                'O_score': 'Openness to New Experiences',
+                'E_score': 'Outgoing & Social Nature',
+                'A_score': 'Cooperation & Team Spirit',
+                'N_score': 'Stress Management & Resilience',
+                'Numerical_Aptitude': 'Comfort with Numbers & Math',
+                'Verbal_Aptitude': 'Language & Communication Skills',
+                'Abstract_Reasoning': 'Pattern Recognition Ability',
+                'Logical_Reasoning': 'Logical Thinking Skills',
+                'Spatial_Aptitude': 'Spatial Visualization',
+                'Enjoy_Teamwork': 'Enjoyment of Team Collaboration',
+                'Creative_Thinking': 'Creative Problem-Solving',
+                'Attention_to_Detail': 'Focus on Details'
+            };
+            return descriptions[field] || field;
+        }
+
+        function selectEditOption(field) {
+            userInput.value = field;
+            processAnswer();
+        }
+
+        function updateUIState() {
+            // Show/hide edit button based on context
+            if (conversationStep === 'editing' || conversationStep === 'editing_field') {
+                editBtn.classList.add('hidden');
+                userInput.placeholder = "Type your selection or response...";
+            } else if (conversationStep !== 'completed') {
+                editBtn.classList.remove('hidden');
+                userInput.placeholder = "Enter rating (1-10) or type 'edit' to make changes...";
+            }
+            
+            // Update input type based on context
+            if (conversationStep === 'editing_field') {
+                userInput.type = 'number';
+                userInput.min = '1';
+                userInput.max = '10';
+            } else {
+                userInput.type = 'text';
+                userInput.removeAttribute('min');
+                userInput.removeAttribute('max');
+            }
+        }
+
+        function showResults(predictions) {
+            if (!predictions) {
+                predictionsList.innerHTML = `
+                    <div class="text-center text-red-400 py-8">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p class="text-lg">Unable to generate predictions at this time.</p>
+                        <p class="text-sm text-blue-200 mt-2">Please try again later or contact support.</p>
+                    </div>
+                `;
+            } else {
+                predictionsList.innerHTML = predictions.map((pred, index) => {
+                    const colors = ['from-purple-500 to-pink-500', 'from-blue-500 to-cyan-500', 'from-green-500 to-emerald-500'];
+                    const icons = ['fas fa-briefcase', 'fas fa-chart-line', 'fas fa-rocket'];
+                    return `
+                        <div class="glass-effect rounded-xl p-6 border-l-4 border-${colors[index].split(' ')[0].split('-')[1]}-400">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r ${colors[index]} flex items-center justify-center mr-4">
+                                        <i class="${icons[index]} text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-white text-lg">${index + 1}. ${pred.career}</h3>
+                                        <p class="text-blue-200 text-sm">High compatibility match</p>
+                                    </div>
+                                </div>
+                                <span class="bg-gradient-to-r ${colors[index]} text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                    ${pred.probability}% match
+                                </span>
+                            </div>
+                            <div class="w-full bg-dark-300 rounded-full h-3">
+                                <div class="bg-gradient-to-r ${colors[index]} h-3 rounded-full transition-all duration-1000 ease-out" 
+                                     style="width: ${pred.probability}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-blue-300 mt-2">
+                                <span>Low match</span>
+                                <span>Perfect match</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            resultsArea.classList.remove('hidden');
+            resultsArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-xl shadow-lg z-50';
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function restartAssessment() {
+            location.reload();
+        }
+
+        // function downloadResults() {
+        //     // Placeholder for download functionality
+        //     showError('Report download feature coming soon!');
+        // }
+        <!-- Replace the downloadResults function in the script section -->
+
+    // ... existing code ...
+
+        async function downloadResults() {
+            try {
+                const predictions = await getCurrentPredictions();
+                
+                // Show loading state
+                const downloadBtn = document.querySelector('button[onclick="downloadResults()"]');
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating Report...';
+                downloadBtn.disabled = true;
+
+                const response = await fetch('/download-report/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        predictions: predictions
+                    })
+                });
+
+                if (response.ok) {
+                    // Create blob from response and trigger download
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    
+                    // Get filename from Content-Disposition header or use default
+                    const contentDisposition = response.headers.get('Content-Disposition');
+                    let filename = 'novax_career_report.pdf';
+                    if (contentDisposition) {
+                        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                        if (filenameMatch) {
+                            filename = filenameMatch[1];
+                        }
+                    }
+                    
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    
+                    // Show success message
+                    showSuccess('Report downloaded successfully!');
+                } else {
+                    const errorData = await response.json();
+                    showError(errorData.error || 'Failed to download report');
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                showError('Error downloading report. Please try again.');
+            } finally {
+                // Restore button state
+                const downloadBtn = document.querySelector('button[onclick="downloadResults()"]');
+                downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> Download Report';
+                downloadBtn.disabled = false;
+            }
+        }
+
+        function getCurrentPredictions() {
+            // Extract predictions from the current results display
+            const predictionElements = document.querySelectorAll('#predictions-list > div');
+            const predictions = [];
+            
+            predictionElements.forEach(element => {
+                const careerElement = element.querySelector('h3');
+                const probabilityElement = element.querySelector('span.bg-gradient-to-r');
+                
+                if (careerElement && probabilityElement) {
+                    const career = careerElement.textContent.replace(/^\d+\.\s/, ''); // Remove numbering
+                    const probability = parseInt(probabilityElement.textContent);
+                    
+                    predictions.push({
+                        career: career,
+                        probability: probability
+                    });
+                }
+            });
+            
+            return predictions;
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50';
+            successDiv.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-3"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 5000);
+        }
+
+        // ... rest of your existing JavaScript code ...
+
+
+        // Utility function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
